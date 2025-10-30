@@ -13,10 +13,31 @@ No.
 You are in charge of remastering your favorite SID tune.  
 This is just a tool, the magic is in your brain (and patch ;-)  
 
-I use a Polyend Poly2 with my custom modular "custom SID".  
+I use a Polyend Poly2 to convert SIDerurgy's MIDI stream to CV.  
+See my setup below.  
 
 This is still a very alpha version, but enough to have fun.   
 I really have fun with this, and I hope you will too !  
+
+## Question: I have a MIDI synthesizer. Can I use that ?
+
+Sure you can. But this will only work for simple SID tunes.  
+Several SID tunes use unique features like Ring Modulation, Hard Sync, and dynamic filtering.  
+For this reason, a custom modular synth provides the highest flexibility.  
+
+## The MIDI to CV module
+
+SIDerurgy converts the SID internal state to MIDI, one voice per channel.  
+However, a modular synth only understands CV (Control Voltage).  
+So a special module (or other device) is needed to convert MIDI to CV.  
+
+There are several MIDI to CV converters.  
+I use a *Polyend Poly2* because it is very flexible. 
+If you plan to remaster complex tunes, you definitely a very flexible module.  
+
+## Polyend Poly2 recommended configuration
+
+[TBD]
 
 
 # LICENSE
