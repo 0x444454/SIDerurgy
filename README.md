@@ -26,8 +26,9 @@ That is my general purpose polyphonic modular synth, rearranged in a rush to tes
 An optimized modules setup for SID tunes remastering would be very different.  
 The good thing is you only need just a fractions of the modules you see in my synth.  
 The bad thing is a modular synthesizer is one of the most expensive hobbies there are.  
-New awesome modules are continuosuly released, and they are expensive. Very expensive.  
-You have been warned.  
+
+**WARNING** - New awesome modules are continuosuly released, and they are expensive. Very expensive.  
+*You have been warned.*  
 
 ## Question: I have a MIDI synthesizer. Can I use that ?
 
