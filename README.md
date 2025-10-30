@@ -14,6 +14,7 @@ This is just a tool, the magic is in your brain (and patch ;-)
 I use a Polyend Poly2 with my custom modular "custom SID".  
 
 This is still a very alpha version, but enough to have fun.   
+And I hope you do ! That's the purpose.  
 
 
 # LICENSE
