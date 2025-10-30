@@ -19,9 +19,9 @@ See my setup below.
 This is still a very alpha version, but enough to have fun.   
 I really have fun with this, and I hope you will too !  
 
-## Question: Do I need a modular synthesizer [exactly] like the one in the picture ?
+## Question: Do I need a modular synthesizer like the one in the picture above (or demo videos) ?
 
-No. Not at all.  
+**No. Not at all.**
 That is my general purpose polyphonic modular synth, rearranged in a rush to test SIDerurgy. 
 An optimized modules setup for SID tunes remastering would be very different.  
 The good thing is you only need just a fractions of the modules you see in my synth.  
