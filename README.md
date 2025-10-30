@@ -11,3 +11,12 @@ This is just a tool, the magic is in your brain (and patch ;-)
 I use a Polyend Poly2 with my custom modular "custom SID".
 
 This is still a very alpha version, but enough to have fun. 
+
+
+# LICENSE
+
+Creative Commons, CC BY
+
+https://creativecommons.org/licenses/by/4.0/deed.en
+
+Please add a link to this github project.
