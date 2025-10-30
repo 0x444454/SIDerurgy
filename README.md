@@ -5,6 +5,9 @@ This program is mainly aimed at creating a custom "SID chip" using a **modular s
 However, it also works with **any MIDI device** (each SID voice is sent to a different channel).  
 General MIDI is supported, but this will only produce good results with simple SID tunes.  
 
+## Is it magic ?
+
+No.
 You are in charge of remastering your favorite SID tune.  
 This is just a tool, the magic is in your brain (and patch ;-)  
 
