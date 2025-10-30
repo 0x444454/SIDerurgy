@@ -3,6 +3,7 @@
 ## Requirements
 
 - Visual Studio 2022 (I am using v17.14.18).
+- Knowing how to open and build a VS solution.
 
 ## Open the solution
 
