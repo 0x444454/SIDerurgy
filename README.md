@@ -36,6 +36,12 @@ Sure you can. But this will only work for simple SID tunes.
 Several SID tunes use unique features like Ring Modulation, Hard Sync, and dynamic filtering.  
 For this reason, a custom modular synth provides the highest flexibility.  
 
+## Question: I have a GM (General MIDI) keyboard/synth. Can I use that ?
+
+Sure you can. But same as above.  
+SIDerurgy will try sending a GM channel program change to match the waveform of each SID voice.  
+But keep your expectations low.  Results will depend on your device.  
+
 ## The MIDI to CV module
 
 SIDerurgy converts the SID internal state to MIDI, one voice per channel.  
