@@ -28,7 +28,7 @@ The good thing is you only need just a fractions of the modules you see in my sy
 The bad thing is a modular synthesizer is one of the most expensive hobbies there are.  
 
 **WARNING** - New awesome modules are continuosuly released, and they are expensive. Very expensive.  
-*You have been warned.*  
+**You have been warned.**  
 
 ## Question: I have a MIDI synthesizer. Can I use that ?
 
