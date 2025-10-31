@@ -21,11 +21,11 @@ See my setup below.
 This is still a very alpha version, but enough to have fun.   
 I really have fun with this, and I hope you will too !  
 
-## Question: Do I need a modular synthesizer like the one in the picture above (or demo videos) ?
+## Question: Do I need a modular synthesizer like the one in the picture above ?
 
 **No. Not at all.**
 That is my general purpose polyphonic modular synth, rearranged in a rush to test SIDerurgy. 
-An optimized modules setup for SID tunes remastering would be very different.  
+An optimized modular setup for SID tunes remastering or live performance would be very different.  
 The good thing is you only need just a fractions of the modules you see in my synth.  
 The bad thing is a modular synthesizer is one of the most expensive hobbies there are.  
 
@@ -34,33 +34,33 @@ The bad thing is a modular synthesizer is one of the most expensive hobbies ther
 
 ## Question: I have a MIDI synthesizer. Can I use that ?
 
-Sure you can. But this will only work for simple SID tunes.  
+Sure you can. But it will only work for simple SID tunes.  
 Several SID tunes use unique features like Ring Modulation, Hard Sync, and dynamic filtering.  
-For this reason, a custom modular synth provides the highest flexibility.  
+For this reason, a custom modular synth provides the highest flexibility and the best results.  
 
 ## Question: I have a GM (General MIDI) keyboard/synth. Can I use that ?
 
-Sure you can. But same as above.  
-SIDerurgy will try sending a GM channel program change to match the waveform of each SID voice.  
-But keep your expectations low.  Results will depend on your device.  
+Yes. But same as above.  
+SIDerurgy will try sending GM channel program changes to match the waveform of each SID voice.  
+But keep your expectations low.  Results will depend on your device and how well can you hack it.  
 
-## How to send a SID tune to SIDerurgy via MIDI (ASID).
+## How do I send a SID tune to SIDerurgy via MIDI (ASID) ?
 
-Check the demo video, or read this:
+Check the demo video above, and/or read this:
 
 1) Install a good loopback MIDI driver, like Tobias Erichsen's loopMIDI (it's free):
 https://www.tobias-erichsen.de/software/loopmidi.html
 
-3) Run loopMIDI.
+2) Run loopMIDI.
 
-4) Run SIDerurgy specifying loopMIDI (or your other virtual interface) as input:
+3) Run SIDerurgy specifying loopMIDI (or your other virtual interface) as input:
 
 ```bash
 SIDerurgy -i loop
 ```
 
 NOTE: This will use your default MIDI output device.
-You can also specify the output device, if needed (this is for my Poly2 device, see below):
+You can also specify the output device, if needed. This is my command line to use my Poly2 device:  
 
 ```bash
 SIDerurgy -i loop -o POLY2
@@ -68,34 +68,36 @@ SIDerurgy -i loop -o POLY2
 
 **NOTE**: If SIDerurgy prints errors about MIDI devices, close all your other MIDI apps, **including your browser**.
 
-5) Then open your browser and go to DeepSID to access the High Voltage SID Collection:
+4) Then open your browser and go to DeepSID to access the High Voltage SID Collection:
 https://deepsid.chordian.net/
 
-6) Select the SID tune to play.
+5) Select the SID tune to play.
 
-7) Change DeepSID play mode to "ASID (MIDI)".
+6) Change DeepSID play mode to "ASID (MIDI)".
 
-8) Wait at least two secs, for DeepSID to "digest" your change. If you rush, you may have problems.
+7) Wait at least two secs, for DeepSID to "digest" your change. If you rush, you may have problems.
 
-9) Make sure the "MIDI port for ASID" is set to the input device you selected in SIDerurgy using the -i option.
+8) Make sure the "MIDI port for ASID" is set to the input device you selected in SIDerurgy using the -i option.
 
 
 ## Question: Why don't you just read a ".sid" file as input ?
 
-Because I am lazy, and I prefer to use DeepSID with its nice UI and stuff.  
+Because I am lazy, and I prefer to use DeepSID with its nice UI and features.  
 Using a .sid file requires integrating a 6502 CPU emulator (e.g. siddump).  
-Let's see if people really want this feature.  
+It can be done, but let's see if people really want it first.  
 
 
-## The MIDI to CV module
+## The MIDI to CV module (for modular synths)
 
-SIDerurgy converts the SID internal state to MIDI, one voice per channel.  
+SIDerurgy maintains the state of a virtual SID chip, and converts it to MIDI in realtime  
+Each of the 3 SID voices is mapped to a MIDI channel: 1, 2, 3.  
 However, a modular synth only understands CV (Control Voltage).  
 So a special module (or other device) is needed to convert MIDI to CV.  
 
 There are several MIDI to CV converters.  
 I use a *Polyend Poly2* because it is very flexible. 
-If you plan to remaster complex tunes, you definitely a very flexible module.  
+If you plan to remaster complex tunes, you need a very flexible converter.  
+Note that for live performances, you may just memorize the patch changes you need to do in realtime (e.g. osc sync).  
 
 ## Polyend Poly2 recommended configuration
 
