@@ -119,11 +119,6 @@ ASID protocol only.
 
 ### MIDI OUT
 
-
-n = MIDI channel hex [0..F], i.e. decimal [1..16] for the user.  
-
-All table values in hex.  
-
 - c = Channel hex [0..F], i.e. Decimal MIDI channel [1..16] for the user.  
 - All table values in hex.  
 
@@ -143,10 +138,11 @@ All table values in hex.
 | Cc | pp | 00       | Program Change               | &check;<sup>5</sup> |
 
 Notes:  
-1. Volume is global and sent to all voice channels (1,2,3) and channel 4.
-2. Filter resonance and cutoff CC are sent on MIDI channel 4 and channels of voices (1,2,3) currently routed through the filter.
-3. Hard Sync slaves the voice to a master sync source voice. Masters for voices (1,2,3) are (3,1,2) respectively.
-5. Program Change is sent to match the shape of a SID voice to the most similar GM instrument.
+1. Volume is global and sent to all voice channels (1,2,3) and channel 4.  
+2. Filter resonance and cutoff CC are sent on MIDI channel 4 and channels of voices (1,2,3) currently routed through the filter.  
+3. Hard Sync slaves the voice to a master sync source voice. Masters for voices (1,2,3) are voices (3,1,2) respectively.
+4. Ring Modulation ring modulates this voice with a source voice. RM-source for voices (1,2,3) are voices (3,1,2) respectively.
+5. Program Change is sent to match the shape of a SID voice to the most similar GM instrument. 
 
 <!--
 | Bn   | 10 | vv | EG ATTACK vv=[1..7F] | |
