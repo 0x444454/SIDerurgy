@@ -7,6 +7,8 @@ General MIDI is supported, but this will only produce good results with simple S
 
 ![screenshots](media/SIDerurgy-slide.jpg)
 
+https://www.youtube.com/watch?v=yzq5XAfxcBw
+
 ## Is it magic ?
 
 No.
