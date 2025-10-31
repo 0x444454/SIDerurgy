@@ -1,5 +1,5 @@
 # SIDerurgy - Forge your favorite SID
-## An ASID to MIDI/CV converter
+## A realtime ASID to MIDI/CV converter
 
 This program is mainly aimed at creating a custom "SID chip" using a **modular synth** via a MIDI to CV interface.  
 However, it also works with **any MIDI device** (each SID voice is sent to a different channel).  
@@ -41,6 +41,49 @@ For this reason, a custom modular synth provides the highest flexibility.
 Sure you can. But same as above.  
 SIDerurgy will try sending a GM channel program change to match the waveform of each SID voice.  
 But keep your expectations low.  Results will depend on your device.  
+
+## How to send a SID tune to SIDerurgy via MIDI (ASID).
+
+Check the demo video, or read this:
+
+1) Install a good loopback MIDI driver, like Tobias Erichsen's loopMIDI (it's free):
+https://www.tobias-erichsen.de/software/loopmidi.html
+
+3) Run loopMIDI.
+
+4) Run SIDerurgy specifying loopMIDI (or your other virtual interface) as input:
+
+```bash
+SIDerurgy -i loop
+```
+
+NOTE: This will use your default MIDI output device.
+You can also specify the output device, if needed (this is for my Poly2 device, see below):
+
+```bash
+SIDerurgy -i loop -o POLY2
+```
+
+**NOTE**: If SIDerurgy prints errors about MIDI devices, close all your other MIDI apps, **including your browser**.
+
+5) Then open your browser and go to DeepSID to access the High Voltage SID Collection:
+https://deepsid.chordian.net/
+
+6) Select the SID tune to play.
+
+7) Change DeepSID play mode to "ASID (MIDI)".
+
+8) Wait at least two secs, for DeepSID to "digest" your change. If you rush, you may have problems.
+
+9) Make sure the "MIDI port for ASID" is set to the input device you selected in SIDerurgy using the -i option.
+
+
+## Question: Why don't you just read a ".sid" file as input ?
+
+Because I am lazy, and I prefer to use DeepSID with its nice UI and stuff.  
+Using a .sid file requires integrating a 6502 CPU emulator (e.g. siddump).  
+Let's see if people really want this feature.  
+
 
 ## The MIDI to CV module
 
