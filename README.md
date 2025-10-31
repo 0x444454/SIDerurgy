@@ -124,21 +124,29 @@ n = MIDI channel hex [0..F], i.e. decimal [1..16] for the user.
 
 All table values in hex.  
 
+- c = Channel hex [0..F], i.e. Decimal MIDI channel [1..16] for the user.  
+- All table values in hex.  
+
 | CC | Byte1 | Byte2 | Description | Currently Implemented ?|
 | :---: | :---: | :---: | --- | --- |
-| 8n | kk | 40       | Note Off                     | &check; |
-| 9n | kk | 40       | Note On                      | &check; |
-| Bn | 15 | [00..7F] | Pulse Width Modulation       | &check; |
-| Bn | 47 | [00..7F] | Filter resonance             | &check;<sup>1</sup> |
-| Bn | 4A | [00..7F] | Filter cutoff                | &check;<sup>1</sup> |
-| Bn | 50 | {00, 7F} | Hard Sync: 0=OFF, 7F=ON      |  |
-| Bn | 51 | {00, 7F} | Ring Mod: 0=OFF, 7F=ON       |  |
-| Bn | 78 | 00       | All sounds off               | &check; |
-| Bn | 79 | 00       | Reset all controllers        | &check; |
-| Bn | 7B | 00       | All notes off                | &check; |
+| 8c | kk | 40       | Note Off                     | &check; |
+| 9c | kk | 40       | Note On                      | &check; |
+| Bc | 07 | {00, 7F} | Volume                       | <sup>1</sup> |
+| Bc | 15 | [00..7F] | Pulse Width Modulation       | &check; |
+| Bc | 47 | [00..7F] | Filter resonance             | &check;<sup>2</sup> |
+| Bc | 4A | [00..7F] | Filter cutoff                | &check;<sup>2</sup> |
+| Bc | 50 | {00, 7F} | Hard Sync: 0=OFF, 7F=ON      | <sup>3</sup> |
+| Bc | 51 | {00, 7F} | Ring Mod: 0=OFF, 7F=ON       | <sup>4</sup> |
+| Bc | 78 | 00       | All sounds off               | &check; |
+| Bc | 79 | 00       | Reset all controllers        | &check; |
+| Bc | 7B | 00       | All notes off                | &check; |
+| Cc | pp | 00       | Program Change               | &check;<sup>5</sup> |
 
 Notes:  
-1. Filter resonance and cutoff CC are sent on MIDI channel 4 and channels of voices currently routed through the filter.
+1. Volume is global and sent to all voice channels (1,2,3) and channel 4.
+2. Filter resonance and cutoff CC are sent on MIDI channel 4 and channels of voices (1,2,3) currently routed through the filter.
+3. Hard Sync slaves the voice to a master sync source voice. Masters for voices (1,2,3) are (3,1,2) respectively.
+5. Program Change is sent to match the shape of a SID voice to the most similar GM instrument.
 
 <!--
 | Bn   | 10 | vv | EG ATTACK vv=[1..7F] | |
