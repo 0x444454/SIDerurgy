@@ -5,11 +5,9 @@ This program is mainly aimed at creating a custom Commodore 64 "SID chip" using 
 However, it also works with **any MIDI device** (each SID voice is sent to a different channel).  
 General MIDI is supported, but this will only produce good results with simple SID tunes.  
 
-Watch the video:
+Watch the video: https://www.youtube.com/watch?v=yzq5XAfxcBw
 
 [![Watch the video](https://img.youtube.com/vi/yzq5XAfxcBw/maxresdefault.jpg)](https://www.youtube.com/watch?v=yzq5XAfxcBw)
-
-https://www.youtube.com/watch?v=yzq5XAfxcBw
 
 ## Is it magic ?
 
