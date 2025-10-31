@@ -104,6 +104,14 @@ Note that for live performances, you may just memorize the patch changes you nee
 [TBD]
 
 
+## Question: SID tunes with percussions are tricky.
+
+Exactly.  
+A perfectly emulated modular SID with automatic switches for Ring Modulation and Sync should have no problem. However this requires several modules, and RM and S are not yet sent as CC (they will in the next version).  
+Another approach is mapping the percussion channel(s) notes to a drum module, or use comparators to split percussions to different modules.  
+You may also program a drum machine to respond to drum notes on the channels (voices) used for SID percussions.  
+Experiment.  
+
 # LICENSE
 
 Creative Commons, CC BY
