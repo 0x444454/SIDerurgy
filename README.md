@@ -120,9 +120,9 @@ ASID protocol only.
 ### MIDI OUT
 
 
-n = MIDI channel hex [0..F], i.e. decimal [1..16] for the user.
+n = MIDI channel hex [0..F], i.e. decimal [1..16] for the user.  
 
-All table values in hex.
+All table values in hex.  
 
 | CC | Byte1 | Byte2 | Description | Currently Implemented ?|
 | :---: | :---: | :---: | --- | --- |
@@ -138,7 +138,7 @@ All table values in hex.
 | Bn | 7B | 00       | All notes off                | &check; |
 
 Notes:  
-1. Filter resonance and cutoff CC are sent on MIDI channel 4 and channels of voice currently routed through the filter.
+1. Filter resonance and cutoff CC are sent on MIDI channel 4 and channels of voices currently routed through the filter.
 
 <!--
 | Bn   | 10 | vv | EG ATTACK vv=[1..7F] | |
