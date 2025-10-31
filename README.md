@@ -126,14 +126,19 @@ All table values in hex.
 
 | CC | Byte1 | Byte2 | Description | Currently Implemented ?|
 | :---: | :---: | :---: | --- | --- |
-| 8n | kk  |  | Note Off | &check; |
-| 9n   | kk | vv | Note On, vv=[1..7F] | &check; |
-| Bn   | 15 | vv | vv=[1..7F] | &check; | Pulse Width Modulation
-| Bn   | 47 | vv | vv=[1..7F] | &check; | Filter resonance
-| Bn   | 4A | vv | vv=[1..7F] | &check; | Filter cutoff
+| 8n | kk | 40       | Note Off                     | &check; |
+| 9n | kk | 40       | Note On                      | &check; |
+| Bn | 15 | [00..7F] | Pulse Width Modulation       | &check; |
+| Bn | 47 | [00..7F] | Filter resonance             | &check;<sup>1</sup> |
+| Bn | 4A | [00..7F] | Filter cutoff                | &check;<sup>1</sup> |
+| Bn | 50 | {00, 7F} | Hard Sync: 0=OFF, 7F=ON      |  |
+| Bn | 51 | {00, 7F} | Ring Mod: 0=OFF, 7F=ON       |  |
+| Bn | 78 | 00       | All sounds off               | &check; |
+| Bn | 79 | 00       | Reset all controllers        | &check; |
+| Bn | 7B | 00       | All notes off                | &check; |
 
-[TBD]
-
+Notes:  
+1. Filter resonance and cutoff CC are sent on MIDI channel 4 and channels of voice currently routed through the filter.
 
 <!--
 | Bn   | 10 | vv | EG ATTACK vv=[1..7F] | |
