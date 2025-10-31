@@ -24,4 +24,6 @@ https://creativecommons.org/licenses/by/4.0/deed.en
 Please add a link to this github project.
 
 
+## The "Sid" internal state wrapper class is a modified version from the following project by Alex Smith:
 
+https://github.com/twistedelectrons/TherapSID
