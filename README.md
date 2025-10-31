@@ -114,6 +114,12 @@ Experiment.
 
 ## SIDerurgy MIDI implementation chart
 
+### MIDI IN
+
+ASID protocol only.
+
+### MIDI OUT
+
 [TBD]
 
 
