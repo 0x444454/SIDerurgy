@@ -19,7 +19,6 @@ I use a Polyend Poly2 to convert SIDerurgy's MIDI stream to CV.
 See my setup below.  
 
 This is still a very alpha version, but enough to have fun.   
-I really have fun with this, and I hope you will too !  
 
 ## Question: Do I need a modular synthesizer like the one in the picture above ?
 
@@ -106,7 +105,7 @@ Note that for live performances, you may just memorize the patch changes you nee
 
 ## Question: SID tunes with percussions are tricky.
 
-Exactly.  
+Indeed.  
 A perfectly emulated modular SID with automatic switches for Ring Modulation and Sync (RM/S) should have no problem. However this requires several modules, and RM/S are not yet sent as CC (they will in the next version).  
 Another approach is mapping the percussion channel(s) notes to a drum module, or use comparators to split percussions to different modules.  
 You may also program a drum machine to respond to drum notes on the channels (voices) used for SID percussions.  
@@ -120,7 +119,29 @@ ASID protocol only.
 
 ### MIDI OUT
 
+
+n = MIDI channel hex [0..F], i.e. decimal [1..16] for the user.
+
+All table values in hex.
+
+| CC | Byte1 | Byte2 | Description | Currently Implemented ?|
+| :---: | :---: | :---: | --- | --- |
+| 8n | kk  |  | Note Off | &check; |
+| 9n   | kk | vv | Note On, vv=[1..7F] | &check; |
+| Bn   | 15 | vv | vv=[1..7F] | &check; | Pulse Width Modulation
+| Bn   | 47 | vv | vv=[1..7F] | &check; | Filter resonance
+| Bn   | 4A | vv | vv=[1..7F] | &check; | Filter cutoff
+
 [TBD]
+
+
+<!--
+| Bn   | 10 | vv | EG ATTACK vv=[1..7F] | |
+| Bn   | 11 | vv | EG DECAY vv=[1..7F] | |
+| Bn   | 12 | vv | EG SUSTAIN vv=[1..7F] | |
+| Bn   | 13 | vv | EG RELEASE vv=[1..7F] | |
+-->
+
 
 
 # LICENSE
