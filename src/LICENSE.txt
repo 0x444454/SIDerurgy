@@ -1,0 +1,12 @@
+LICENSE
+Creative Commons, CC BY
+
+https://creativecommons.org/licenses/by/4.0/deed.en
+
+Please add a link to this github project:
+
+https://github.com/0x444454/SIDerurgy
+
+NOTE: The "Sid" internal state wrapper class is a modified version from the following project by Alex Smith:
+
+https://github.com/twistedelectrons/TherapSID
