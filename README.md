@@ -67,7 +67,7 @@ SIDerurgy -i loop -o POLY2
 
 **NOTE**: Both input and output device names are **case-sensitive** substrings of the actual device name (e.g. "oop" will match "loopMIDI", "HulaHoop Device", etc).  
   
-**NOTE**: If SIDerurgy prints errors about MIDI devices, close all your other MIDI apps, **including your browser**.  
+**NOTE**: If SIDerurgy prints errors about MIDI devices, close all your other MIDI apps, **including your browser**.  Then launch SIDerurgy again.  
 
 4) Then open your browser and go to DeepSID to access the High Voltage SID Collection:
 https://deepsid.chordian.net/
