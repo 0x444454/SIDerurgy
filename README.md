@@ -58,16 +58,15 @@ https://www.tobias-erichsen.de/software/loopmidi.html
 SIDerurgy -i loop
 ```
 
-NOTE: This will use your default MIDI output device.
+**NOTE**: This will use your default MIDI output device.  
 You can also specify the output device, if needed. This is my command line to use my Poly2 device:  
 
 ```bash
 SIDerurgy -i loop -o POLY2
 ```
 
-NOTE: Both input and output device names are case-sensitive substrings of the actual device name (e.g. "oop" will match "loopMIDI", "HulaHoop Device", etc).
-
-**NOTE**: If SIDerurgy prints errors about MIDI devices, close all your other MIDI apps, **including your browser**.
+**NOTE**: Both input and output device names are case-sensitive substrings of the actual device name (e.g. "oop" will match "loopMIDI", "HulaHoop Device", etc).  
+**NOTE**: If SIDerurgy prints errors about MIDI devices, close all your other MIDI apps, **including your browser**.  
 
 4) Then open your browser and go to DeepSID to access the High Voltage SID Collection:
 https://deepsid.chordian.net/
