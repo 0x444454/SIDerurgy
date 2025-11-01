@@ -130,10 +130,7 @@ SIDerurgy translates the status of this virtual SID to MIDI in realtime.
 ### MIDI OUT
 
 - n = Encoded channel in hex [0..F], corresponding to user MIDI channel [1..16].  
-- All table values in hex.  
-
-- n = Encoded channel in hex [0..F], corresponding to user MIDI channel [1..16].  
-- All table values in hex.  
+- All table values in hex.   
 
 | CC | Byte1 | Byte2 | Description | Domain<sup>1</sup> | Currently Implemented ?|
 | :---: | :---: | :---: | --- | :---: | --- |
