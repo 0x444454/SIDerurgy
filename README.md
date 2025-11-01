@@ -125,48 +125,47 @@ ASID protocol only.
 - n = Encoded channel in hex [0..F], corresponding to user MIDI channel [1..16].  
 - All table values in hex.  
 
-| CC | Byte1 | Byte2 | Description | Currently Implemented ?|
-| :---: | :---: | :---: | --- | --- |
-| 8n | kk | 40       | Note Off                        | &check; |
-| 9n | kk | 40       | Note On                         | &check; |
-| Bn | 07 | {00, 7F} | Volume                          | &cross;<sup>1</sup> |
-| Bn | 15 | [00..7F] | Pulse Width Modulation          | &check; |
-| Bn | 46 | [00..7F] | Envelope Sustain                | &cross; |
-| Bn | 47 | [00..7F] | Filter resonance                | &check;<sup>2</sup> |
-| Bn | 48 | [00..7F] | Envelope Release                | &cross; |
-| Bn | 49 | [00..7F] | Envelope Attack                 | &cross; |
-| Bn | 4A | [00..7F] | Filter cutoff                   | &check;<sup>2</sup> |
-| Bn | 4B | [00..7F] | Envelope Decay                  | &cross; |
-| Bn | 50 | {00,7F}  | Hard Sync: 0=OFF, 7F=ON         | &cross;<sup>3</sup> |
-| Bn | 51 | {00,7F}  | Ring Mod: 0=OFF, 7F=ON          | &cross;<sup>4</sup> |
-| Bn | 6D | {00,7F}  | Filter voice 1: 0=NO, 7F=YES    | &cross;<sup>5</sup> |
-| Bn | 6E | {00,7F}  | Filter voice 2: 0=NO, 7F=YES    | &cross;<sup>5</sup> |
-| Bn | 6F | {00,7F}  | Filter voice 3: 0=NO, 7F=YES    | &cross;<sup>5</sup> |
-| Bn | 70 | {00,7F}  | Filter LP: 0=OFF, 7F=ON         | &cross;<sup>6</sup> |
-| Bn | 71 | {00,7F}  | Filter BP: 0=OFF, 7F=ON         | &cross;<sup>6</sup> | 
-| Bn | 72 | {00,7F}  | Filter HP: 0=OFF, 7F=ON         | &cross;<sup>6</sup> |
-| Bn | 73 | {00,7F}  | Voice 3 output:  0=OFF, 7F=ON   | &cross;<sup>7</sup> |
-| Bn | 74 | {00,7F}  | Waveform Triangle: 0=OFF, 7F=ON | &cross;<sup>8</sup> |
-| Bn | 75 | {00,7F}  | Waveform Sawtooth: 0=OFF, 7F=ON | &cross;<sup>8</sup> |
-| Bn | 76 | {00,7F}  | Waveform Pulse: 0=OFF, 7F=ON    | &cross;<sup>8</sup> |
-| Bn | 77 | {00,7F}  | Waveform Noise: 0=OFF, 7F=ON    | &cross;<sup>8</sup> |
-| Bn | 78 | 00       | All sounds off                  | &check; |
-| Bn | 79 | 00       | Reset all controllers           | &check; |
-| Bn | 7B | 00       | All notes off                   | &check; |
-| Cn | pp | 00       | Program Change                  | &check;<sup>8</sup> |
+| CC | Byte1 | Byte2 | Description | Domain<sup>1</sup> | Currently Implemented ?|
+| :---: | :---: | :---: | --- | :---: | --- |
+| 8n | kk | 40       | Note Off                        |V| &check; |
+| 9n | kk | 40       | Note On                         |V| &check; |
+| Bn | 07 | {00, 7F} | Volume                          |G| &cross;<sup>2</sup> |
+| Bn | 15 | [00..7F] | Pulse Width Modulation          |V| &check; |
+| Bn | 46 | [00..7F] | Envelope Sustain                |V| &cross; |
+| Bn | 47 | [00..7F] | Filter resonance                |G| &check;<sup>3</sup> |
+| Bn | 48 | [00..7F] | Envelope Release                |G| &cross; |
+| Bn | 49 | [00..7F] | Envelope Attack                 |V| &cross; |
+| Bn | 4A | [00..7F] | Filter cutoff                   |V| &check;<sup>3</sup> |
+| Bn | 4B | [00..7F] | Envelope Decay                  |V| &cross; |
+| Bn | 50 | {00,7F}  | Hard Sync: 0=OFF, 7F=ON         |V| &cross;<sup>4</sup> |
+| Bn | 51 | {00,7F}  | Ring Mod: 0=OFF, 7F=ON          |V| &cross;<sup>5</sup> |
+| Bn | 6D | {00,7F}  | Filter voice 1: 0=NO, 7F=YES    |G| &cross;<sup>6</sup> |
+| Bn | 6E | {00,7F}  | Filter voice 2: 0=NO, 7F=YES    |G| &cross;<sup>6</sup> |
+| Bn | 6F | {00,7F}  | Filter voice 3: 0=NO, 7F=YES    |G| &cross;<sup>6</sup> |
+| Bn | 70 | {00,7F}  | Filter LP: 0=OFF, 7F=ON         |G| &cross;<sup>7</sup> |
+| Bn | 71 | {00,7F}  | Filter BP: 0=OFF, 7F=ON         |G| &cross;<sup>7</sup> | 
+| Bn | 72 | {00,7F}  | Filter HP: 0=OFF, 7F=ON         |G| &cross;<sup>7</sup> |
+| Bn | 73 | {00,7F}  | Voice 3 output:  0=OFF, 7F=ON   |G| &cross;<sup>8</sup> |
+| Bn | 74 | {00,7F}  | Waveform Triangle: 0=OFF, 7F=ON |V| &cross;<sup>9</sup> |
+| Bn | 75 | {00,7F}  | Waveform Sawtooth: 0=OFF, 7F=ON |V| &cross;<sup>9</sup> |
+| Bn | 76 | {00,7F}  | Waveform Pulse: 0=OFF, 7F=ON    |V| &cross;<sup>9</sup> |
+| Bn | 77 | {00,7F}  | Waveform Noise: 0=OFF, 7F=ON    |V| &cross;<sup>9</sup> |
+| Bn | 78 | 00       | All sounds off                  |V| &check; |
+| Bn | 79 | 00       | Reset all controllers           |V| &check; |
+| Bn | 7B | 00       | All notes off                   |V| &check; |
+| Cn | pp | 00       | Program Change                  |V| &check;<sup>10</sup> |
 
 Notes:  
-1. Volume is global and sent to all voice channels (1,2,3) and channel 4.  
-2. Filter resonance and cutoff CC are sent on channel 4 and channels of voices (1,2,3) currently routed through the filter.  
-3. Hard Sync slaves the voice to a master sync source voice. Masters for voices (1,2,3) are voices (3,1,2) respectively.
-4. Ring Modulation ring modulates this voice with a source voice. RM-sources for voices (1,2,3) are voices (3,1,2) respectively.
-5. Each voice can be routed through the filter or not.
-6. Filter modes (Low Pass, Band Pass, High Pass) can be independently enabled.
-7. Voice 3 audio output can be disabled, so it is only used to modulate other voices.
-8. Different waveform types can be enabled at the same time.
-9. Program Change is sent to match the shape of a SID voice to the most similar GM instrument.  
-
-
+1. Domain of control: V=Voice, G=Global.  
+2. Volume is global and sent on channel 4, and all voice channels (1,2,3). 
+3. Filter resonance and cutoff CC are sent on channel 4, and all voice channels (1,2,3) that are currently routed through the filter.  
+4. Hard Sync slaves the voice to a master sync source voice. Masters for voices (1,2,3) are voices (3,1,2) respectively.
+5. Ring Modulation ring modulates this voice with a source voice. RM-sources for voices (1,2,3) are voices (3,1,2) respectively.
+6. Each voice can be routed through the filter or not. This CC is sent on the voice channel, and channel 4.
+7. Filter modes (Low Pass, Band Pass, High Pass) can be independently enabled. This CC is sent on channel 4, and all voice channels (1,2,3) that are currently routed through the filter. 
+8. Voice 3 audio output can be disabled, so it is only used to modulate other voices. This CC is sent on both channel 3 and 4.
+9. Multiple different waveform types can be enabled at the same time on each voice.
+10. Program Change is sent to match the shape of a SID voice to the most similar GM instrument.  
 
 
 
