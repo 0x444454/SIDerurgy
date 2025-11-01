@@ -126,7 +126,6 @@ ASID protocol only.
 | :---: | :---: | :---: | --- | --- |
 | 8n | kk | 40       | Note Off                        | &check; |
 | 9n | kk | 40       | Note On                         | &check; |
-
 | Bn | 07 | {00, 7F} | Volume                          | &cross;<sup>1</sup> |
 | Bn | 15 | [00..7F] | Pulse Width Modulation          | &check; |
 | Bn | 46 | [00..7F] | Envelope Sustain                | &cross; |
@@ -135,28 +134,22 @@ ASID protocol only.
 | Bn | 49 | [00..7F] | Envelope Attack                 | &cross; |
 | Bn | 4A | [00..7F] | Filter cutoff                   | &check;<sup>2</sup> |
 | Bn | 4B | [00..7F] | Envelope Decay                  | &cross; |
-
 | Bn | 50 | {00|7F}  | Hard Sync: 0=OFF, 7F=ON         | &cross;<sup>3</sup> |
 | Bn | 51 | {00|7F}  | Ring Mod: 0=OFF, 7F=ON          | &cross;<sup>4</sup> |
-
 | Bn | 6D | {00|7F}  | Filter voice 1: 0=NO, 7F=YES    | &cross;<sup>5</sup> |
 | Bn | 6E | {00|7F}  | Filter voice 2: 0=NO, 7F=YES    | &cross;<sup>5</sup> |
 | Bn | 6F | {00|7F}  | Filter voice 3: 0=NO, 7F=YES    | &cross;<sup>5</sup> |
-
 | Bn | 70 | {00|7F}  | Filter LP: 0=OFF, 7F=ON         | &cross;<sup>6</sup> |
 | Bn | 71 | {00|7F}  | Filter BP: 0=OFF, 7F=ON         | &cross;<sup>6</sup> | 
 | Bn | 72 | {00|7F}  | Filter HP: 0=OFF, 7F=ON         | &cross;<sup>6</sup> |
 | Bn | 73 | {00|7F}  | Voice 3 output:  0=OFF, 7F=ON   | &cross;<sup>7</sup> |
-
 | Bn | 74 | {00|7F}  | Waveform Triangle: 0=OFF, 7F=ON | &cross;<sup>8</sup> |
 | Bn | 75 | {00|7F}  | Waveform Sawtooth: 0=OFF, 7F=ON | &cross;<sup>8</sup> |
 | Bn | 76 | {00|7F}  | Waveform Pulse: 0=OFF, 7F=ON    | &cross;<sup>8</sup> |
 | Bn | 77 | {00|7F}  | Waveform Noise: 0=OFF, 7F=ON    | &cross;<sup>8</sup> |
-
 | Bn | 78 | 00       | All sounds off                  | &check; |
 | Bn | 79 | 00       | Reset all controllers           | &check; |
 | Bn | 7B | 00       | All notes off                   | &check; |
-
 | Cn | pp | 00       | Program Change                  | &check;<sup>8</sup> |
 
 Notes:  
