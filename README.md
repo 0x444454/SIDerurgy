@@ -122,7 +122,8 @@ Experiment.
 
 ### MIDI IN
 
-ASID protocol only.
+ASID protocol only.  
+
 The ASID protocol sends realtime updates of the SID internal state.
 SIDerurgy translates the status of this virtual SID to MIDI in realtime.
 
