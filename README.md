@@ -65,6 +65,8 @@ You can also specify the output device, if needed. This is my command line to us
 SIDerurgy -i loop -o POLY2
 ```
 
+NOTE: Both input and output device names are case-sensitive substrings of the actual device name (e.g. "oop" will match "loopMIDI", "HulaHoop Device", etc).
+
 **NOTE**: If SIDerurgy prints errors about MIDI devices, close all your other MIDI apps, **including your browser**.
 
 4) Then open your browser and go to DeepSID to access the High Voltage SID Collection:
@@ -77,6 +79,11 @@ https://deepsid.chordian.net/
 7) Wait at least two secs, for DeepSID to "digest" your change. If you rush, you may have problems.
 
 8) Make sure the "MIDI port for ASID" is set to the input device you selected in SIDerurgy using the -i option.
+
+
+## I have problems. How to debug ?
+
+Launch SIDerurgy using also the -d option.
 
 
 ## Question: Why don't you just read a ".sid" file as input ?
