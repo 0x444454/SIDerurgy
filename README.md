@@ -132,7 +132,7 @@ SIDerurgy translates the status of this virtual SID to MIDI in realtime.
 - n = Encoded channel in hex [0..F], corresponding to user MIDI channel [1..16].  
 - All table values in hex.   
 
-| CC | Byte1 | Byte2 | Description | Domain<sup>1</sup> | Currently Implemented ?|
+| Msg | Byte1 | Byte2 | Description | Domain<sup>1</sup> | Currently Implemented ?|
 | :---: | :---: | :---: | --- | :---: | --- |
 | 8n | kk | 40       | Note Off                        |V| &check; |
 | 9n | kk | 40       | Note On                         |V| &check; |
@@ -161,19 +161,20 @@ SIDerurgy translates the status of this virtual SID to MIDI in realtime.
 | Bn | 79 | 00       | Reset all controllers           |V| &check; |
 | Bn | 7B | 00       | All notes off                   |V| &check; |
 | Cn | pp | 00       | Program Change                  |V| &check;<sup>10</sup> |
+| En | L[00..7F] | H[00..7F] | Program Change                  |V| &cross;<sup>11</sup> |
 
 Notes:  
 1. Domain of control: V=Voice, G=Global.  
-2. Volume is global and sent on channel 4, and all voice channels (1,2,3). 
+2. Volume is global and sent on channel 4, and all voice channels (1,2,3).  
 3. Filter resonance and cutoff CC are sent on channel 4, and all voice channels (1,2,3) that are currently routed through the filter.  
-4. Hard Sync slaves the voice to a master sync source voice. Masters for voices (1,2,3) are voices (3,1,2) respectively.
-5. Ring Modulation ring modulates this voice with a source voice. RM-sources for voices (1,2,3) are voices (3,1,2) respectively.
-6. Each voice can be routed through the filter or not. This CC is sent on the voice channel, and channel 4.
-7. Filter modes (Low Pass, Band Pass, High Pass) can be independently enabled. This CC is sent on channel 4, and all voice channels (1,2,3) that are currently routed through the filter. 
-8. Voice 3 audio output can be disabled, so it is only used to modulate other voices. This CC is sent on both channel 3 and 4.
-9. Multiple different waveform types can be enabled at the same time on each voice.
+4. Hard Sync slaves the voice to a master sync source voice. Masters for voices (1,2,3) are voices (3,1,2) respectively.  
+5. Ring Modulation ring modulates this voice with a source voice. RM-sources for voices (1,2,3) are voices (3,1,2) respectively.  
+6. Each voice can be routed through the filter or not. This CC is sent on the voice channel, and channel 4.  
+7. Filter modes (Low Pass, Band Pass, High Pass) can be independently enabled. This CC is sent on channel 4, and all voice channels (1,2,3) that are currently routed through the filter.  
+8. Voice 3 audio output can be disabled, so it is only used to modulate other voices. This CC is sent on both channel 3 and 4.  
+9. Multiple different waveform types can be enabled at the same time on each voice.  
 10. Program Change is sent to match the shape of a SID voice to the most similar GM instrument.  
-
+11. If the "-b" option is used, a Pitch Bend message is also sent encoding the absolute CV of the note [0..16383]. The MIDI to CV interface must map this to voltage [0..10]. This provides much more precise translation of the SID frequency than the note on/off message (which quantizes the freq to a note).  
 
 
 # LICENSE
