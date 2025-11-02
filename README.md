@@ -174,7 +174,7 @@ Notes:
 8. Voice 3 audio output can be disabled, so it is only used to modulate other voices. This CC is sent on both channel 3 and 4.  
 9. Multiple different waveform types can be enabled at the same time on each voice.  
 10. Program Change is sent to match the shape of a SID voice to the most similar GM instrument.  
-11. If the "-b" option is used, a Pitch Bend message is also sent encoding the absolute CV of the note [0..16383]. The MIDI to CV interface must map this to voltage [0..10]. This provides much more precise translation of the SID frequency than the note on/off message (which quantizes the freq to a note).  
+11. If the "-p" option is used, a Pitch Bend message is also sent encoding the absolute CV of the note [0..16383]. The MIDI to CV interface must map this to voltage [0..10]. This provides much more precise translation of the SID frequency than the note on/off message (which quantizes the freq to a note).  
 
 
 # LICENSE
