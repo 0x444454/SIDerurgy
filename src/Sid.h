@@ -29,8 +29,8 @@ public:
   enum Shape {
 		NOISE = 1 << 7,
 		PULSE = 1 << 6,
-		SAW = 1 << 5,
-		TRI = 1 << 4
+		SAW =   1 << 5,
+		TRI =   1 << 4
 	};
 
 	enum VoiceRegister {
@@ -46,7 +46,7 @@ public:
 	enum FilterMode {
 		HIGHPASS = 1 << 6,
 		BANDPASS = 1 << 5,
-		LOWPASS = 1 << 4
+		LOWPASS =  1 << 4
 	};
 
 	enum Register {
@@ -87,11 +87,10 @@ public:
 
 
 public:
-	int next_pair_ = 0;
-	int chip_enable_bit_ = 1;
-	bool force_initial_update_ = true;
-	uint8_t registers_[25];
-	uint8_t registers_sent_[25];
+	const float sid_clock_ = 1000000.0f; // TODO: Should we make this configurable for higher precision (PAL/NTSC) ?
+	#define NUM_SID_REGS 25
+	uint8_t registers_[NUM_SID_REGS];
+	uint8_t registers_sent_[NUM_SID_REGS];
 
 
 public:
@@ -103,8 +102,13 @@ public:
 	int get_CONTROL(int voice);
 
 	void set_freq(int voice, int value);
+	/// Get the SID frequency register value (16 bit).
 	int get_freq(int voice);
+	/// Get the SID frequency in Hz.
 	float get_freq_Hz(int voice);
+	/// Get the SID frequency in CV voltage.
+	float get_freq_CV(int voice);
+	/// Get the SID frequency quantized to the nearest MIDI note.
 	int get_MIDI_note(int voice);
 	wstring get_note_as_string(int voice);
 

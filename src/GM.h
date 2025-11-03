@@ -13,6 +13,8 @@ public:
 
   // GM instruments list (starting from 0, not 1.
   enum Instrument {
+    // None
+    NONE = -1,             // Used for return codes (silence/error).
     // Piano
     Acoustic_Grand_Piano,
     Bright_Acoustic_Piano,

@@ -61,13 +61,17 @@ const uint8_t g_table_id_to_offset_[] = {
 
 class SIDerurgy : public MIDI_Listener {
 public:
+  bool must_init_GM_presets_ = true;
   Sid sid_;
   MIDI_Device* midi_out_ = nullptr;
+  bool enable_pitch_bend_ = false;
+  bool enable_GM_ = false;
 
   int reg_CONTROL_prev_[3]; // Previous control registers.
 
   int prev_gates_[3];
   int prev_notes_[3];
+  int prev_freq_[3];
   int prev_shape_[3];
   int prev_pulse_width_[3];
   int prev_filter_cutoff_ = -1;
@@ -84,16 +88,18 @@ public:
 
   bool is_voice_filtered(int voice);
   bool is_note_on_detected(int voice, int new_note);
+  bool is_freq_change_detected(int voice, int new_freq);
   bool is_shape_change_detected(int voice, int new_shape);
   bool is_pulse_width_change_detected(int voice, int new_pulse_width);
   bool is_filter_cutoff_change_detected(int new_cutoff);
   bool is_filter_resonance_change_detected(int new_resonance);
 
+  bool send_note_on(int voice, int note_num);
+  bool send_note_off(int voice, int note_num);
   /// Send filter cutoff to all channels affected by the filter.
   bool send_filter_cutoff(int cutoff);
   /// Send filter resonance to all channels affected by the filter.
   bool send_filter_resonance(int resonance);
-
 
   /// NOTE: The instrument starts from 0, so it can be directly used for program change.
   static GM::Instrument get_GM_instrument_for_shape(uint8_t shape);

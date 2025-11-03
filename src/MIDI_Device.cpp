@@ -58,12 +58,15 @@ MIDI_Device::MIDI_Device(int dev_id_in, int dev_id_out, MIDI_Listener* listener)
 
 MIDI_Device::~MIDI_Device() {
   if (hDev_in_) {
-    midiInStop(hDev_in_);
-    midiInClose(hDev_in_);
+    // TODO: For some reasons, these hang on exit.
+    //midiInReset(hDev_in_);
+    //midiInStop(hDev_in_);
+    //midiInClose(hDev_in_);
   }
   if (hDev_out_) {
-    midiOutReset(hDev_out_);
-    midiOutClose(hDev_out_);
+    // TODO: For some reasons, these hang on exit.
+    //midiOutReset(hDev_out_);
+    //midiOutClose(hDev_out_);
   }
   free(buffer_);
   free(pmh_);
@@ -131,6 +134,7 @@ MIDI_Device* MIDI_Device::create(wstring prefix, Mode mode, MIDI_Listener* liste
 
 
 bool MIDI_Device::send_note_on(int channel, int note_num) {
+  if (debug_level_ >= 1) printf("Chn[%d]: Sending note: %d ON\n", channel, note_num);
   if (note_num < 0) return false;
   DWORD v = 0x400090 | channel; // Use 0x40 for velocity (i.e. no velocity implemented). 
   v |= (note_num << 8);
@@ -140,6 +144,7 @@ bool MIDI_Device::send_note_on(int channel, int note_num) {
   
 
 bool MIDI_Device::send_note_off(int channel, int note_num) {
+  if (debug_level_ >= 1) printf("Chn[%d]: Sending note: %d OFF\n", channel, note_num);
   if (note_num < 0) return false;
   DWORD v = 0x400080 | channel; // Use 0x40 for velocity (i.e. no velocity implemented). 
   v |= (note_num << 8);
@@ -149,7 +154,7 @@ bool MIDI_Device::send_note_off(int channel, int note_num) {
 
 
 bool MIDI_Device::send_channel_mode(int channel, ChannelMode channel_mode) {
-  DWORD v = 0x0000B0 | channel; // Use 0x40 for velocity (i.e. no velocity implemented). 
+  DWORD v = 0x0000B0 | channel;
   v |= (channel_mode << 8);
   last_err_ = midiOutShortMsg(hDev_out_, v);
   return (last_err_ == MMSYSERR_NOERROR);
@@ -157,7 +162,8 @@ bool MIDI_Device::send_channel_mode(int channel, ChannelMode channel_mode) {
 
 
 bool MIDI_Device::send_program_change(int channel, int program) {
-  DWORD v = 0x0000C0 | channel; // Use 0x40 for velocity (i.e. no velocity implemented). 
+  if (debug_level_ >= 1) printf("Chn[%d]: Sending Program Change: %d\n", channel, program);
+  DWORD v = 0x0000C0 | channel;
   v |= (program << 8);
   last_err_ = midiOutShortMsg(hDev_out_, v);
   return (last_err_ == MMSYSERR_NOERROR);
@@ -165,7 +171,7 @@ bool MIDI_Device::send_program_change(int channel, int program) {
 
 bool MIDI_Device::send_pulse_width(int channel, float pw) {
   int hires_value = (int) (pw * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
-  int cc = 21; // Use CC 21.
+  int cc = 21; // Use CC 21 (0x15).
   send_CC(channel, cc, hires_value >> 7);
   return (last_err_ == MMSYSERR_NOERROR);
 }
@@ -174,7 +180,7 @@ bool MIDI_Device::send_pulse_width(int channel, float pw) {
 
 bool MIDI_Device::send_filter_cutoff(int channel, float cutoff) {
   int hires_value = (int)(cutoff * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
-  int cc = 74; // Use CC 74.
+  int cc = 74; // Use CC 74 (0x4A).
   send_CC(channel, cc, hires_value >> 7);
   //if (channel == 4) printf("CUTOFF[%d]=%d\n", channel, hires_value >> 7);
   return (last_err_ == MMSYSERR_NOERROR);
@@ -183,8 +189,26 @@ bool MIDI_Device::send_filter_cutoff(int channel, float cutoff) {
 
 bool MIDI_Device::send_filter_resonance(int channel, float resonance) {
   int hires_value = (int)(resonance * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
-  int cc = 71; // Use CC 71.
+  int cc = 71; // Use CC 71 (0x47).
   send_CC(channel, cc, hires_value >> 7);
+  return (last_err_ == MMSYSERR_NOERROR);
+}
+
+bool MIDI_Device::send_mod_wheel(int channel, float mod_wheel) {
+  int hires_value = (int)(mod_wheel * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
+  int cc = 1; // Use CC 1 (0x01).
+  send_CC(channel, cc, hires_value >> 7);
+  return (last_err_ == MMSYSERR_NOERROR);
+}
+
+
+bool MIDI_Device::send_pitch_bend(int channel, float pitch_bend) {
+  if (debug_level_ >= 1) printf("Chn[%d]: Sending freq as Pitch Bend: %.3f\n", channel, pitch_bend);
+  int hires_value = roundf(pitch_bend * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
+  DWORD v = 0x0000E0 | channel;       // $En
+  v |= ((hires_value & 0x007F) << 8); // Low 7 bits.
+  v |= ((hires_value & 0x3F80) << 9); // High 7 bits.
+  last_err_ = midiOutShortMsg(hDev_out_, v);
   return (last_err_ == MMSYSERR_NOERROR);
 }
 
@@ -212,6 +236,7 @@ void MIDI_Device::reset() {
       // All notes off.
       for (int n = 0; n < 128; n++) send_note_off(chn, n);
       send_note_off(0, 0); // Preset default SID frequency to lowest note.
+      send_pitch_bend(chn, 0.5f);
     }
   }
 }

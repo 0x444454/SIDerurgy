@@ -27,8 +27,30 @@
 #include "SIDerurgy.h"
 
 
+static int g_debug_level = 0;
+static HWND g_hwnd = nullptr;
+static bool exiting_ = false;
+
 // int main(int argc, char** argv);
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+
+static BOOL WINAPI CtrlHandler(DWORD type) {
+  switch (type) {
+  case CTRL_C_EVENT:
+  case CTRL_BREAK_EVENT:
+  case CTRL_CLOSE_EVENT:      // console window closed
+  case CTRL_LOGOFF_EVENT:     // user logs off
+  case CTRL_SHUTDOWN_EVENT:   // system is shutting down
+    if (g_debug_level > 0) printf("CtrlHandler evt type=%d\n", type);
+    exiting_ = true;
+    if (g_hwnd) PostMessage(g_hwnd, WM_CLOSE, 0, 0);
+    return TRUE;                          // we handled it (prevents default terminate)
+  default:
+    return FALSE;
+  }
+}
+
 
 void print_usage(wstring& app_name) {
   wprintf(L"Usage:\n"
@@ -37,6 +59,8 @@ void print_usage(wstring& app_name) {
     L"  Options:\n"
     L"  -h        : Prints usage info.\n"
     L"  -d <level>: Set debug level.\n"
+    L"  -gm       : Enable General MIDI mode (send Program Changes).\n"
+    L"  -p        : [Alpha-note: hope you like bugs] Send voice frequency CV as absolute pitch bend value [0..16384].\n"
     L"  -i <name> : The MIDI (ASID) input device name to match (case sensitive search).\n"
     L"  -o <name> : The MIDI output device name to match (case sensitive search).\n"
     L"\n"
@@ -45,7 +69,7 @@ void print_usage(wstring& app_name) {
 }
 
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, _In_ int nCmdShow)
 {
 
   // Register the window class.
@@ -61,7 +85,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
   // Create the window.
 
-  HWND hwnd = CreateWindowEx(
+  g_hwnd = CreateWindowEx(
     0,                              // Optional window styles.
     CLASS_NAME,                     // Window class
     L"SIDerurgy",                   // Window text
@@ -76,7 +100,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     NULL        // Additional application data
   );
 
-  if (hwnd == NULL) {
+  if (g_hwnd == NULL) {
     return 0;
   }
 
@@ -103,13 +127,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     freopen_s(&fp, "CONOUT$", "w", stdout);
   }
 
+  // Setup CtrlHandler.
+  BOOL res = SetConsoleCtrlHandler(CtrlHandler, TRUE);
+  if (!res) printf("ERROR: Failed to set CtrlHandler.");
+
   printf("\n");
-  printf("SIDerurgy v0.2 build 20251028 - Forge your favorite SID.\n");
+  printf("SIDerurgy v0.3 build 20251101 - Forge your favorite SID.\n");
   printf("An ASID to MIDI/CV converter created by DDT.\n");
   printf("https://github.com/0x444454/SIDerurgy\n\n");
 
   // Debug level.
-  int debug_level = 0;
+  g_debug_level = 0;
 
   // App name (as launched).
   wstring app_name;
@@ -122,7 +150,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   //string name_prefix_out = "Microsoft";
   //string name_prefix_out = "loopMIDI";
 
-
+  // Create SIDerurgy core.
+  SIDerurgy* siderurgy = new SIDerurgy();
 
   // Parse params.
   int argc = 0;
@@ -145,6 +174,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
       // Check for options without arguments.
       if (cur_option == L"h") {
         print_usage(app_name);
+      }
+      else if (cur_option == L"p") {
+        siderurgy->enable_pitch_bend_ = true;
+        wprintf(L"Freq CV via pitch-bend enabled (THIS IS PRE-ALPHA IMPL, HOPE YOU LIKE BUGS).\n");
+      }
+      else if (cur_option == L"gm") {
+        siderurgy->enable_GM_ = true;
+        wprintf(L"General MIDI (GM) enabled.\n");
       }
       else if (cur_option == L"i") {
         name_prefix_in.clear(); // Clear default.
@@ -169,8 +206,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
       // Apply option.
       if (cur_option == L"d") {
         size_t pos = 0;
-        debug_level = std::stoi(cur_option_arg, &pos, 10);
-        wprintf(L"Debug level = %d\n\n", debug_level);
+        g_debug_level = std::stoi(cur_option_arg, &pos, 10);
+        wprintf(L"Debug level = %d\n\n", g_debug_level);
       }
       if (cur_option == L"i") {
         name_prefix_in = cur_option_arg;
@@ -182,10 +219,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   }
   LocalFree(argv);
 
-
-  // Create SIDerurgy core listener.
-  SIDerurgy* siderurgy = new SIDerurgy();
-  siderurgy->debug_level_ = debug_level;
+  // Set debug level.
+  siderurgy->debug_level_ = g_debug_level;
 
   // Create MIDI INPUT device.
   MIDI_Device* device_in = MIDI_Device::create(name_prefix_in, MIDI_Device::Mode::MIDI_IN, siderurgy);
@@ -195,6 +230,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     return 3; // 3 = file / path not found
   }
   else {
+    device_in->debug_level_ = g_debug_level;
     wprintf(L"Opened MIDI IN device \"%ls\"\n\n", device_in->get_device_name_in().c_str());
     if (device_in->get_error() != MMSYSERR_NOERROR) {
       wprintf(L"WARNING: Opened MIDI IN device error: %d\n", device_in->get_error());
@@ -208,6 +244,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     return 3; // 3 = file / path not found
   }
   else {
+    device_out->debug_level_ = g_debug_level;
     wprintf(L"Opened MIDI OUT device \"%ls\"\n", device_out->get_device_name_out().c_str());
     if (device_out->get_error() != MMSYSERR_NOERROR) {
       wprintf(L"WARNING: Opened MIDI OUT device error: %d\n", device_out->get_error());
@@ -216,15 +253,30 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   }
 
 
+  wprintf(L"CTRL-C to stop.\n");
+
   // Run the message loop.
 
   MSG msg = { };
   while (GetMessage(&msg, NULL, 0, 0) > 0) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
+    if (exiting_) break;
   }
 
-  delete device_in;
+  // Uninitialize stuff.
+
+  if (device_in) {
+    device_in->set_listener(nullptr);
+    delete device_in;
+  }
+
+  if (device_out) {
+    device_out->reset();
+    delete device_out;
+  }
+
+  delete siderurgy;
 
   return 0;
 }
@@ -234,6 +286,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
   {
+    case WM_CLOSE: {
+      DestroyWindow(hwnd);           // or do your own “Are you sure?” first
+      return 0;
+    }
+
     case WM_DESTROY: {
       PostQuitMessage(0);
       return 0;
@@ -249,8 +306,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 
     case WM_QUIT: {
-      //break;
     }
+
     
     //default: {
     //  break;

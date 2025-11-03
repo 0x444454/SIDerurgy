@@ -2,7 +2,6 @@
 #include <cassert>
 
 
-
 static void write_mask(uint8_t& value, int mask, int new_value) {
 	value = (value & (~mask)) | (new_value & mask);
 }
@@ -61,17 +60,29 @@ int Sid::get_freq(int voice) {
 	return v;
 }
 
-
 float Sid::get_freq_Hz(int voice) {
-	float f = (float) get_freq(voice);
+	float f = (float)get_freq(voice);
 	return f * 1000000.0f / 16777216.0f; // i.e. SID_Clock / 16777216
+}
+
+//float Sid::get_freq_Hz(int voice) {
+//	float f_reg = (float) get_freq(voice);
+//	return f_reg * sid_clock_ / 16777216.0f; // i.e. SID_Clock / 16777216
+//}
+
+
+float Sid::get_freq_CV(int voice) {
+	const float f_C0 = 16.3516f; // Frequency of C0 (i.e. base freq when CV = 0V).
+	const float K = sid_clock_ / 16777216.0f / f_C0; // K = 0.0036451873
+	float voltage = log2f(max(1.0f, get_freq(voice) * K)); // Lower bound to 1.
+	return voltage;
 }
 
 
 int Sid::get_MIDI_note(int voice) {
 	float f = get_freq_Hz(voice);
 	if (f <= 0.0f) return -1;
-	int note = static_cast<int>((12.0f * (log10(f / 440.0f) / log10(2.0f)) + 57.0f) + 0.5f);
+	int note = static_cast<int>((12.0f * (log10f(f / 440.0f) / log10f(2.0f)) + 57.0f) + 0.5f); // TODO: Should we use round() ?
 	return note;
 }
 

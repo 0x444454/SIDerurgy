@@ -11,11 +11,15 @@ SIDerurgy::~SIDerurgy() {
 
 
 void SIDerurgy::reset_SID() {
-  memset(&sid_, 0, sizeof(sid_));
+  for (int r = 0; r < NUM_SID_REGS; r++) {
+    sid_.registers_[r] = 0;
+    sid_.registers_sent_[r] = 0;
+  }
   for (int voice = 0; voice < 3; voice++) {
     reg_CONTROL_prev_[voice] = -1;
     prev_gates_[voice] = -1; // Gates are unknown.
     prev_notes_[voice] = -1; // No note is playing.
+    prev_freq_[voice] = -1;
     prev_shape_[voice] = -1;
     prev_pulse_width_[voice] = -1;
   }
@@ -41,6 +45,9 @@ bool SIDerurgy::is_note_on_detected(int voice, int new_note) {
   return cur_gate; // Previously off, now on.
 }
 
+bool SIDerurgy::is_freq_change_detected(int voice, int new_freq) {
+  return (prev_freq_[voice] != new_freq);
+}
 
 bool SIDerurgy::is_shape_change_detected(int voice, int new_shape) {
   return (prev_shape_[voice] != new_shape);
@@ -56,6 +63,29 @@ bool SIDerurgy::is_filter_cutoff_change_detected(int new_cutoff) {
 
 bool SIDerurgy::is_filter_resonance_change_detected(int new_resonance) {
   return (prev_filter_resonance_ != new_resonance);
+}
+
+
+bool SIDerurgy::send_note_on(int voice, int note_num) {
+  bool res = false;
+  if (enable_pitch_bend_ == false) {
+    res = midi_out_->send_note_on(voice, note_num);
+  }
+  else {
+    res = midi_out_->send_note_on(voice, 12); // Offset on note C0 (most osc will use that).
+  }
+  return res;
+}
+
+bool SIDerurgy::send_note_off(int voice, int note_num) {
+  bool res = false;
+  if (enable_pitch_bend_ == false) {
+    res = midi_out_->send_note_off(voice, note_num);
+  }
+  else {
+    res = midi_out_->send_note_off(voice, 0); // Offset on note C0 (most osc will use that).
+  }
+  return res;
 }
 
 
@@ -83,12 +113,14 @@ bool SIDerurgy::send_filter_resonance(int resonance) {
   return res;
 }
 
+
 GM::Instrument SIDerurgy::get_GM_instrument_for_shape(uint8_t shape) {
   if (shape & Sid::Shape::NOISE) return GM::Instrument::Breath_Noise;
-  else if (shape & Sid::Shape::TRI) return GM::Instrument::Ocarina;
   else if (shape & Sid::Shape::PULSE) return GM::Instrument::Lead_1_square;
   else if (shape & Sid::Shape::SAW) return GM::Instrument::Lead_2_sawtooth;
-  return GM::Instrument::Lead_1_square; // Should never happen.
+  else if (shape & Sid::Shape::TRI) return GM::Instrument::Ocarina;
+  // If we are here, then all waveform shapes have been disabled (silent voice).
+  return GM::Instrument::NONE; // NOTE: There is not GM instrument for "silence", so this must be emulated elsewhere.
 }
 
 
@@ -100,6 +132,17 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
       printf(" %02X", buf[i]);
     }
     printf("\n");
+  }
+
+  // Check if we must still init GM presets.
+  if (must_init_GM_presets_) {
+    must_init_GM_presets_ = false;
+    if (enable_GM_) {
+      // Default all voices to Pulse on GM.
+      for (int voice = 0; voice <= 2; voice++) {
+        midi_out_->send_program_change(voice, GM::Instrument::Lead_1_square);
+      }
+    }
   }
 
   // Parser.
@@ -198,12 +241,22 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
     // Handle per-voice SID state.
 
     for (int voice = 0; voice < 3; voice++) {
+      // Check for freq change.
+      int freq = sid_.get_freq(voice);
+      if (is_freq_change_detected(voice, freq)) {
+        if (enable_pitch_bend_) {
+          float cv = sid_.get_freq_CV(voice); // Control voltage.
+          midi_out_->send_pitch_bend(voice, cv / 10.0f); // Normalize CV to [0..1] range.
+        }
+        prev_freq_[voice] = freq;
+      }
+      // Handle MIDI notes.
       int gate = (sid_.get_gate(voice) ? 1 : 0);
       int note = sid_.get_MIDI_note(voice);
-      if (note <= 0) {
+      if (note < 0) {
         // Voice is muted (freq == 0).
         if (prev_notes_[voice] >= 0) {
-          midi_out_->send_note_off(voice, prev_notes_[voice]);
+          send_note_off(voice, prev_notes_[voice]);
           prev_notes_[voice] = -1;
         }
       }
@@ -213,15 +266,19 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
         if (note != prev_notes_[voice]) {
           // NEW NOTE.
           // Previous note goes off.
-          midi_out_->send_note_off(voice, prev_notes_[voice]);
+          if (prev_notes_[voice] != -1) {
+            send_note_off(voice, prev_notes_[voice]);
+          }
           // New note is on or off depending on gate.
-          if (gate) midi_out_->send_note_on(voice, note);
+          if (gate) send_note_on(voice, note);
           else {
             // New note but no gate.
             // This seems to be ignored by the Poly2 MIDI to CV interface.
             // So we use an ON/OFF trick to convince it to set CV to the note value anyway.
-            midi_out_->send_note_on(voice, note); // Yes, it's a valid note !
-            midi_out_->send_note_off(voice, note); // ...but it lasts 0 seconds (no gate :-).
+            send_note_on(voice, note); // Yes, it's a valid note !
+            if (enable_GM_ == false) {
+              send_note_off(voice, note); // ...but it lasts 0 seconds (no gate :-).
+            }
           }
         }
         else {
@@ -229,8 +286,8 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
           // Check if gate has changed.
           if (gate != prev_gates_[voice]) {
             // Gate has changed.
-            if (gate) midi_out_->send_note_on(voice, note);
-            else midi_out_->send_note_off(voice, note); // MIDI to CV interface should set CV to the note value anyway.
+            if (gate) send_note_on(voice, note);
+            else send_note_off(voice, note); // MIDI to CV interface should set CV to the note value anyway.
           }
           else {
             // Gate has not changed.
@@ -244,10 +301,18 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
 
       // Check for waveform change.
       int shape = sid_.get_shape(voice);
-      if (is_shape_change_detected(voice, shape)) {
-        midi_out_->send_program_change(voice, get_GM_instrument_for_shape(shape));
-        prev_shape_[voice] = shape;
+      if (enable_GM_) {
+        if (is_shape_change_detected(voice, shape)) {
+          GM::Instrument gm_instr = get_GM_instrument_for_shape(shape);
+          if (gm_instr >= 0) {
+            midi_out_->send_program_change(voice, gm_instr);
+          }
+          else {
+            // TODO: Emulate silent voice (no shape) on GM.
+          }
+        }
       }
+      prev_shape_[voice] = shape;
       // Check pulse width mod [0..4095].
       int pw = sid_.get_pulsewidth(voice);
       if (is_pulse_width_change_detected(voice, pw)) {
@@ -256,7 +321,7 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
       }
     }
     
-    // Handle hlobal SID state.
+    // Handle global SID state.
 
     // Check filter cutoff [0..2047].
     int cutoff = sid_.get_filter_cutoff();

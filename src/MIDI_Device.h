@@ -79,10 +79,21 @@ public:
   bool send_note_off(int channel, int note_num);
   bool send_channel_mode(int channel, ChannelMode channel_mode);
   bool send_program_change(int channel, int program);
-  /// Change pulse width on the given channel. Values in the range [0..1].
+  /// Change pulse width on the given channel.
+  /// Pulse width value in the range [0..1].
   bool send_pulse_width(int channel, float pw);
+  /// Cutoff value in the range[0..1].
   bool send_filter_cutoff(int channel, float cutoff);
+  /// Resonance value in the range[0..1].
   bool send_filter_resonance(int channel, float resonance);
+  /// Modulation Wheel bend value in the range[0..1].
+  bool send_mod_wheel(int channel, float mod_wheel);
+  /// Pitch bend value in the range[0..1].
+  /// Value:
+  ///   - Negative pitch bend: [0..0.5)
+  ///   - No pitch bend: 0.5
+  ///   - Positive pitch bend: (0..1.0]
+  bool send_pitch_bend(int channel, float pitch_bend);
   
   bool send_CC(int channel, int controller, int value);
   void reset();
