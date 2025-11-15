@@ -109,7 +109,7 @@ Note that for live performances, you may just memorize the patch changes you nee
 
 I am using Poly2 firmware v3.2.
 Configuration:
-- Voices = 4 (it's 3 for the SID, but we may use voice 4 in the future)
+- Voices = 4 (it's 3 for the SID, but we use channel 4 for global/special controls)
 - Play mode = Channels
 - Channels -> Voice 1 = 1
 - Channels -> Voice 2 = 2
