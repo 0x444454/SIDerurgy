@@ -14,9 +14,10 @@
 ///   2023-09-01 Initial experimental version. MIDI interface working. Some results. [DDT]
 ///   [...] Two years hiatus.
 ///   2025-10-26 Started working on this again. [DDT].
-///   2025-10-30 Alpha version, working with Polyend Poly2. Some SID features are not yet mapped. [DDT]
+///   2025-10-30 First alpha version, working with Polyend Poly2. Several SID features are not yet mapped. [DDT]
+///   2025-11-15 Added CC support for sync, ringmod, waveform type. [DDT]
 /// 
-/// This is still a very alpha version, but enough to have fun. 
+/// This is still a VERY ALPHA VERSION, but enough to have fun. 
 /// Enjoy !
 /// .DDT
 
@@ -67,13 +68,15 @@ public:
   bool enable_pitch_bend_ = false;
   bool enable_GM_ = false;
 
+  // Per voice.
   int reg_CONTROL_prev_[3]; // Previous control registers.
-
   int prev_gates_[3];
   int prev_notes_[3];
   int prev_freq_[3];
   int prev_shape_[3];
   int prev_pulse_width_[3];
+
+  // Global.
   int prev_filter_cutoff_ = -1;
   int prev_filter_resonance_ = -1;
 
@@ -91,6 +94,9 @@ public:
   bool is_freq_change_detected(int voice, int new_freq);
   bool is_shape_change_detected(int voice, int new_shape);
   bool is_pulse_width_change_detected(int voice, int new_pulse_width);
+  bool is_sync_change_detected(int voice, int new_reg_CONTROL_);
+  bool is_ringmod_change_detected(int voice, int new_reg_CONTROL_);
+  bool is_waveform_change_detected(int voice, int new_reg_CONTROL_);
   bool is_filter_cutoff_change_detected(int new_cutoff);
   bool is_filter_resonance_change_detected(int new_resonance);
 

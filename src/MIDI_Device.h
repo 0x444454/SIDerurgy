@@ -11,6 +11,7 @@
 #include <windows.h>
 #include <string>
 
+#include "Sid.h"
 #include "GM.h"
 
 using namespace std;
@@ -79,9 +80,18 @@ public:
   bool send_note_off(int channel, int note_num);
   bool send_channel_mode(int channel, ChannelMode channel_mode);
   bool send_program_change(int channel, int program);
-  /// Change pulse width on the given channel.
+  /// Send pulse width on the given channel.
   /// Pulse width value in the range [0..1].
   bool send_pulse_width(int channel, float pw);
+  /// Send sync status on the given channel.
+  bool send_sync_status(int channel, bool enabled);
+  /// Send ringmod status on the given channel.
+  bool send_ringmod_status(int channel, bool enabled);
+  /// Send waveform status on the given channel.
+  bool send_waveform_status(int channel, Sid::Shape shape, bool enabled);
+
+  
+  
   /// Cutoff value in the range[0..1].
   bool send_filter_cutoff(int channel, float cutoff);
   /// Resonance value in the range[0..1].

@@ -132,7 +132,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
   if (!res) printf("ERROR: Failed to set CtrlHandler.");
 
   printf("\n");
-  printf("SIDerurgy v0.3 build 20251101 - Forge your favorite SID.\n");
+  printf("SIDerurgy v0.4 build 20251115 - Forge your favorite SID.\n");
   printf("An ASID to MIDI/CV converter created by DDT.\n");
   printf("https://github.com/0x444454/SIDerurgy\n\n");
 

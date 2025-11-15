@@ -57,6 +57,21 @@ bool SIDerurgy::is_pulse_width_change_detected(int voice, int new_pulse_width) {
   return (prev_pulse_width_[voice] != new_pulse_width);
 }
 
+bool SIDerurgy::is_sync_change_detected(int voice, int new_reg_CONTROL_) {
+  int mask = 0x0002;
+  return ((reg_CONTROL_prev_[voice] & mask) != (new_reg_CONTROL_ & mask));
+}
+
+bool SIDerurgy::is_ringmod_change_detected(int voice, int new_reg_CONTROL_) {
+  int mask = 0x0004;
+  return ((reg_CONTROL_prev_[voice] & mask) != (new_reg_CONTROL_ & mask));
+}
+
+bool SIDerurgy::is_waveform_change_detected(int voice, int new_reg_CONTROL_) {
+  int mask = 0x00F0;
+  return ((reg_CONTROL_prev_[voice] & mask) != (new_reg_CONTROL_ & mask));
+}
+
 bool SIDerurgy::is_filter_cutoff_change_detected(int new_cutoff) {
   return (prev_filter_cutoff_ != new_cutoff);
 }
@@ -97,7 +112,7 @@ bool SIDerurgy::send_filter_cutoff(int cutoff) {
     if (is_voice_filtered(i)) res &= midi_out_->send_filter_cutoff(i, f);
   }
   // Send also to channel 4 (global).
-  res &= midi_out_->send_filter_cutoff(4, f);
+  res &= midi_out_->send_filter_cutoff(3, f);
   return res;
 }
 
@@ -109,7 +124,7 @@ bool SIDerurgy::send_filter_resonance(int resonance) {
     if (is_voice_filtered(i)) res &= midi_out_->send_filter_resonance(i, f);
   }
   // Send also to channel 4 (global).
-  res &= midi_out_->send_filter_resonance(4, f);
+  res &= midi_out_->send_filter_resonance(3, f);
   return res;
 }
 
@@ -186,11 +201,6 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
       return;
     }
     
-    // Save previous CONTROL registers.
-    reg_CONTROL_prev_[0] = sid_.registers_[Sid::Register::CONTROL1];
-    reg_CONTROL_prev_[1] = sid_.registers_[Sid::Register::CONTROL2];
-    reg_CONTROL_prev_[2] = sid_.registers_[Sid::Register::CONTROL3];
-
     int mask1 = buf[3];
     int mask2 = buf[4];
     int mask3 = buf[5];
@@ -319,9 +329,38 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
         midi_out_->send_pulse_width(voice, pw / 4095.0f);
         prev_pulse_width_[voice] = pw;
       }
+
+      // ----------------- Handle features in voice CONTROL reg ------------------
+      int v_ctrl = sid_.get_CONTROL(voice);
+
+      // Check sync.
+      if (is_sync_change_detected(voice, v_ctrl)) {
+        midi_out_->send_sync_status(voice, (bool) (v_ctrl & 0x02));
+      }
+
+      // Check ringmod.
+      if (is_ringmod_change_detected(voice, v_ctrl)) {
+        midi_out_->send_ringmod_status(voice, (bool) (v_ctrl & 0x04));
+      }
+
+      // Check waveform.
+      if (is_ringmod_change_detected(voice, v_ctrl)) {
+        // Check all waveforms in this order: tri, saw, pul, noi.
+        for (int mask = 0x10; mask != 0x0100; mask <<= 1) {
+          Sid::Shape shape = (Sid::Shape) ((v_ctrl ^ reg_CONTROL_prev_[voice]) & mask);
+          if (shape != 0) {
+            // This shape has changed.
+            bool enabled = (bool) (v_ctrl & mask);
+            midi_out_->send_waveform_status(voice, shape, enabled); // Only changed ones.
+          }
+        }
+      }
+
+      // Finally, save to previous voice CONTROL register.
+      reg_CONTROL_prev_[voice] = sid_.get_CONTROL(voice);
     }
     
-    // Handle global SID state.
+    // --------------------- Handle global SID state -----------------------
 
     // Check filter cutoff [0..2047].
     int cutoff = sid_.get_filter_cutoff();

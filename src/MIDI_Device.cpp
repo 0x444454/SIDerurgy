@@ -176,6 +176,33 @@ bool MIDI_Device::send_pulse_width(int channel, float pw) {
   return (last_err_ == MMSYSERR_NOERROR);
 }
 
+bool MIDI_Device::send_sync_status(int channel, bool enabled) {
+  int cc = 80; // Use CC 80 (0x50).
+  send_CC(channel, cc, enabled ? 0x7f : 0x00);
+  return (last_err_ == MMSYSERR_NOERROR);
+}
+
+bool MIDI_Device::send_ringmod_status(int channel, bool enabled) {
+  int cc = 81; // Use CC 81 (0x51).
+  send_CC(channel, cc, enabled ? 0x7f : 0x00);
+  return (last_err_ == MMSYSERR_NOERROR);
+}
+
+bool MIDI_Device::send_waveform_status(int channel, Sid::Shape shape, bool enabled) {
+  int cc = -1;
+  switch (shape) {
+    case Sid::TRI:     cc = 116; break; // Use CC 116 (0x74)
+    case Sid::SAW:     cc = 117; break; // Use CC 117 (0x75)
+    case Sid::PULSE:   cc = 118; break; // Use CC 118 (0x76)
+    case Sid::NOISE:   cc = 119; break; // Use CC 119 (0x77)
+    default:
+      // Unsupported waveform (should never happen).
+      return false;
+  }
+  send_CC(channel, cc, enabled ? 0x7f : 0x00);
+  return (last_err_ == MMSYSERR_NOERROR);
+}
+
 
 
 bool MIDI_Device::send_filter_cutoff(int channel, float cutoff) {
@@ -191,6 +218,7 @@ bool MIDI_Device::send_filter_resonance(int channel, float resonance) {
   int hires_value = (int)(resonance * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
   int cc = 71; // Use CC 71 (0x47).
   send_CC(channel, cc, hires_value >> 7);
+  //if (channel == 4) printf("RESO[%d]=%d\n", channel, hires_value >> 7);
   return (last_err_ == MMSYSERR_NOERROR);
 }
 
@@ -204,7 +232,7 @@ bool MIDI_Device::send_mod_wheel(int channel, float mod_wheel) {
 
 bool MIDI_Device::send_pitch_bend(int channel, float pitch_bend) {
   if (debug_level_ >= 1) printf("Chn[%d]: Sending freq as Pitch Bend: %.3f\n", channel, pitch_bend);
-  int hires_value = roundf(pitch_bend * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
+  int hires_value = (int) roundf(pitch_bend * (float)(0x3fff)); // 14-bit MIDI hi-res value (not yet supported).
   DWORD v = 0x0000E0 | channel;       // $En
   v |= ((hires_value & 0x007F) << 8); // Low 7 bits.
   v |= ((hires_value & 0x3F80) << 9); // High 7 bits.
