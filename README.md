@@ -107,7 +107,7 @@ Note that for live performances, you may just memorize the patch changes you nee
 
 ## Polyend Poly2 recommended configuration
 
-[TBD]
+![screenshots](media/Poly2-setup.png)
 
 
 ## Question: SID tunes with percussions are tricky.
