@@ -107,6 +107,16 @@ Note that for live performances, you may just memorize the patch changes you nee
 
 ## Polyend Poly2 recommended configuration
 
+I am using Poly2 firmware v3.2.
+Configuration:
+- Voices = 4 (it's 3 for the SID, but we may use voice 4 in the future)
+- Play mode = Channels
+- Channels -> Voice 1 = 1
+- Channels -> Voice 2 = 2
+- Channels -> Voice 3 = 3
+- Channels -> Voice 4 = 4
+- Custom CV -> Map CC as per the [MIDI OUT TABLE](#midi-out) to the following recommended outputs:
+
 ![screenshots](media/Poly2-setup.png)
 
 
