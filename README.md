@@ -161,7 +161,7 @@ SIDerurgy translates the status of this virtual SID to MIDI in realtime.
 | Bn | 79 | 00       | Reset all controllers           |V| &check; |
 | Bn | 7B | 00       | All notes off                   |V| &check; |
 | Cn | pp | 00       | Program Change                  |V| &check;<sup>10</sup> |
-| En | L[00..7F] | H[00..7F] | Pitch Bend (abs pitch)  |V| &cross;<sup>11</sup> |
+| En | L[00..7F] | H[00..7F] | Pitch Bend (abs pitch)  |V| &#x1F41B;<sup>11</sup> |
 
 Notes:  
 1. Domain of control: V=Voice, G=Global.  
