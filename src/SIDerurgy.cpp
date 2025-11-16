@@ -344,7 +344,7 @@ void SIDerurgy::on_receive_long_data(int64_t timestamp, unsigned char* buf, int 
       }
 
       // Check waveform.
-      if (is_ringmod_change_detected(voice, v_ctrl)) {
+      if (is_waveform_change_detected(voice, v_ctrl)) {
         // Check all waveforms in this order: tri, saw, pul, noi.
         for (int mask = 0x10; mask != 0x0100; mask <<= 1) {
           Sid::Shape shape = (Sid::Shape) ((v_ctrl ^ reg_CONTROL_prev_[voice]) & mask);
