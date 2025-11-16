@@ -199,6 +199,7 @@ bool MIDI_Device::send_waveform_status(int channel, Sid::Shape shape, bool enabl
       // Unsupported waveform (should never happen).
       return false;
   }
+  if (debug_level_ >= 2) printf("Chn[%d]: Sending waveform %d status: %s\n", channel, shape, enabled ? "ON" : "OFF");
   send_CC(channel, cc, enabled ? 0x7f : 0x00);
   return (last_err_ == MMSYSERR_NOERROR);
 }
