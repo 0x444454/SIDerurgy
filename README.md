@@ -115,6 +115,7 @@ Configuration:
 - Channels -> Voice 2 = 2
 - Channels -> Voice 3 = 3
 - Channels -> Voice 4 = 4
+- Pitch Bend range -> 5 octaves
 - Custom CV -> Map CC as per the [MIDI OUT TABLE](#midi-out) to the following recommended outputs:
 
 ![screenshots](media/Poly2-setup.png)
