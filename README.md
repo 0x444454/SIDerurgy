@@ -185,7 +185,7 @@ Notes:
 8. Voice 3 audio output can be disabled, so it is only used to modulate other voices. This CC is sent on both channel 3 and 4.  
 9. Multiple different waveform types can be enabled at the same time on each voice.  
 10. Program Change is sent to match the shape of a SID voice to the most similar GM instrument.  
-11. If the "-p" option is used, all MIDI notes will be kk=60 (i.e. C-4) and a Pitch Bend message is sent encoding the offset CV of the note [0..16383]. The MIDI to CV interface must map pitch-bend in the [-5..+5] octaves range. This provides a much more precise translation of the SID frequency than using notes (which are quantized to their specific frequency).  
+11. If the "-p" option is used, all MIDI notes will be kk=60 (i.e. C4) and a Pitch Bend message is sent encoding the offset CV of the note [0..16383]. The MIDI to CV interface must map pitch-bend in the [-5..+5] octaves range. This provides a much more precise translation of the SID frequency than using notes (which are quantized to their specific frequency).  
 
 
 # LICENSE
