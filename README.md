@@ -123,7 +123,7 @@ Configuration:
 
 ## Question: SID tunes with percussions are tricky.
 
-Indeed.  
+Not a question :) But indeed they are.  
 A perfectly emulated modular SID with automatic switches for Noise waveform enable, Ring Modulation and Sync should have no problem. However this requires several modules.  
 Most tunes use one main voice for percussions, so a quick solution is mapping the noise waveform for that voice (CC 0x77) to an output gate, and use it together with pitch to drive modular drums.
 A more advanced approach would be mapping single notes sent on the percussion channel(s) to a drum module, or use comparators to split percussions to different modules.  
